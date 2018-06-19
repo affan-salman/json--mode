@@ -1,4 +1,4 @@
-;;; json+-mode.el --- An opinionated configuration for the excellent json-mode.
+;;; json+-mode.el --- A modern configuration for the excellent json-mode.
 
 ;; Copyright (C) 2018+ Affan Salman
 
@@ -22,7 +22,8 @@
 
 ;;; Commentary:
 ;;
-;; Extend the excellent json-mode for a modern out-of-the-box experience.
+;; Configure the excellent json-mode and related Emacs editing extensions for a
+;; modern out-of-the-box JSON editing and navigation experience.
 ;;
 ;; * Suggested Usage
 ;;
@@ -48,10 +49,11 @@ auto-enabling smartparens.  When set, it does the following:
 
 - Enables smartparens if not already switched on.
 
-- Sets up smartparens to automatically create a newline, indent
-  the closing curly brace and place the point at the appropriate
-  indented position if the user presses RETURN after smartparens
-  inserts the matching curly bracket."
+- Sets up the RETURN key for smartparens insertion to
+  automatically create a new line while moving the closing curly
+  brace below the newly inserted line with correct indentation as
+  well as placing the point at the appropriate indented
+  position."
   :type 'boolean
   :group 'json+)
 
@@ -66,8 +68,9 @@ and indentation instead of the default '{}'."
 ;;;###autoload
 (define-minor-mode json+-mode
     "A modern configuration for `json-mode'.
-Toggle json+ mode on or off.
-Turn json+ mode on if ARG is positive, off otherwise."
+
+Toggle json+ mode on or off. Turn json+ mode on if ARG is
+positive, off otherwise."
   :lighter " js+"
   :group 'json+
   (if json+-mode
