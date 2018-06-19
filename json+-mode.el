@@ -3,7 +3,7 @@
 ;; Copyright (C) 2018+ Affan Salman
 
 ;; Author: Affan Salman
-;; URL: https://github.com/affan-salman/json+-mode
+;; URL: https://github.com/affan-salman/jsonplus-mode
 ;; Package-Version: 20180619.1200
 ;; Version: 0.0.1
 
@@ -26,7 +26,9 @@
 ;;
 ;; * Suggested Usage
 ;;
-;; M-x json+-mode toggles json+ mode in the current buffer.
+;; After the usual `require', `use-package' or similar:
+;;
+;;     M-x json+-mode toggles json+ mode in the current buffer.
 ;;
 ;; To automatically enable it in your json-mode buffers, use:
 ;;
@@ -47,9 +49,9 @@ auto-enabling smartparens.  When set, it does the following:
 - Enables smartparens if not already switched on.
 
 - Sets up smartparens to automatically create a newline, indent
-  and place the point at the appropriate position if the user
-  presses RETURN after smartparens inserts the matching curly
-  bracket."
+  the closing curly brace and place the point at the appropriate
+  indented position if the user presses RETURN after smartparens
+  inserts the matching curly bracket."
   :type 'boolean
   :group 'json+)
 
@@ -76,7 +78,7 @@ Turn json+ mode on if ARG is positive, off otherwise."
               (progn
                 (require 'smartparens)
                 (smartparens-mode 1)))
-          (sp-local-pair json-mode "{" nil :post-handlers
+          (sp-local-pair 'json-mode "{" nil :post-handlers
                          '((json+-create-newline-and-enter-sexp "RET")))))))
 
 ;;;###autoload
