@@ -80,6 +80,14 @@ indentation instead of the default '{}'."
   (forward-line -1)
   (indent-according-to-mode))
 
+;;
+;; Track the state of auto-activated modes to respect the user's previous
+;; settings when json+ mode is toggled off.
+;;
+
+(defvar json+-enabled-smartparens nil
+  "Whether `smartparens' was enabled by `json+-mode'.")
+
 ;;;###autoload
 (define-minor-mode json+-mode
     "A modern configuration for `json-mode'.
@@ -89,15 +97,17 @@ positive, off otherwise."
   :lighter " js+"
   :group 'json+
   (if json+-mode
-      (progn
-        (when (and json+-mode-manage-smartparens (featurep 'smartparens))
-          ;; Be careful not to override existing smartparens configuration.
-          (if (not smartparens-mode)
-              (progn
-                (require 'smartparens)
-                (smartparens-mode 1)))
-          (sp-local-pair 'json-mode "{" nil :post-handlers
-                         '((json+-create-newline-and-enter-sexp "RET")))))))
+      (when (and json+-mode-manage-smartparens (featurep 'smartparens))
+        ;; Be careful not to override existing smartparens configuration.
+        (if (not smartparens-mode)
+            (progn
+              (require 'smartparens)
+              (smartparens-mode 1)
+              (setq-local json+-enabled-smartparens t)))
+        (sp-local-pair 'json-mode "{" nil :post-handlers
+                       '((json+-create-newline-and-enter-sexp "RET"))))
+    (when json+-enabled-smartparens
+      (smartparens-mode -1))))
 
 ;;;###autoload
 (defun turn-on-json+-mode ()
