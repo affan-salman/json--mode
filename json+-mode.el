@@ -66,9 +66,9 @@ When set, it does the following during `json+-mode' activation:
 - Enables hideshow if not already switched on.
 
 - Sets up context-sensitive org-mode style keybindings through
-  `hideshow-org'.
-"
-  )
+  `hideshow-org'."
+  :type 'boolean
+  :group 'json+)
 
 (defun json+-create-newline-and-enter-sexp (&rest _ignored)
   "Tweak the post-closing-brace insertion behaviour.
@@ -88,6 +88,12 @@ indentation instead of the default '{}'."
 (defvar json+-enabled-smartparens nil
   "Whether `smartparens' was enabled by `json+-mode'.")
 
+(defvar json+-enabled-hideshow nil
+  "Whether `hideshow' was enabled by `json+-mode'.")
+
+(defvar json+-enabled-hideshow-org nil
+  "Whether `hideshow-org' was enabled by `json+-mode'.")
+
 ;;;###autoload
 (define-minor-mode json+-mode
     "A modern configuration for `json-mode'.
@@ -97,17 +103,38 @@ positive, off otherwise."
   :lighter " js+"
   :group 'json+
   (if json+-mode
-      (when (and json+-mode-manage-smartparens (featurep 'smartparens))
-        ;; Be careful not to override existing smartparens configuration.
-        (if (not smartparens-mode)
-            (progn
-              (require 'smartparens)
-              (smartparens-mode 1)
-              (setq-local json+-enabled-smartparens t)))
-        (sp-local-pair 'json-mode "{" nil :post-handlers
-                       '((json+-create-newline-and-enter-sexp "RET"))))
-    (when json+-enabled-smartparens
-      (smartparens-mode -1))))
+      (progn
+        (when (and json+-mode-manage-smartparens (featurep 'smartparens))
+         ;; Be careful not to override existing smartparens configuration.
+         (if (not smartparens-mode)
+             (progn
+               (require 'smartparens)
+               (smartparens-mode 1)
+               (setq-local json+-enabled-smartparens t)))
+         (sp-local-pair 'json-mode "{" nil :post-handlers
+                        '((json+-create-newline-and-enter-sexp "RET"))))
+        (when (and json+-mode-manage-hideshow
+                   (featurep 'hideshow)
+                   (featurep 'hideshow-org))
+          ;; Be careful not to override existing hideshow configuration.
+          (when (not hs-minor-mode)
+            (require 'hideshow)
+            (hs-minor-mode 1)
+            (setq-local json+-enabled-hideshow t))
+          (when (not hs-org/minor-mode)
+            (require 'hideshow-org)
+            (hs-org/minor-mode 1)
+            (setq-local json+-enabled-hideshow-org t))))
+    (progn
+      (when json+-enabled-smartparens
+        (smartparens-mode -1)
+        (setq-local json+-enabled-smartparens nil))
+      (when json+-enabled-hideshow
+        (hs-minor-mode -1)
+        (setq-local json+-enabled-hideshow nil))
+      (when json+-enabled-hideshow-org
+        (hs-org/minor-mode -1)
+        (setq-local json+-enabled-hideshow-org nil)))))
 
 ;;;###autoload
 (defun turn-on-json+-mode ()
