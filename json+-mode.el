@@ -44,8 +44,9 @@
   :group 'json+)
 
 (defcustom json+-mode-manage-smartparens t
-  "Set this to nil if you do not need json+ mode configuring and
-auto-enabling smartparens.  When set, it does the following:
+  "Whether json+ should configure and auto-enable smartparens.
+
+When set, it does the following during `json+-mode' activation:
 
 - Enables smartparens if not already switched on.
 
@@ -57,9 +58,23 @@ auto-enabling smartparens.  When set, it does the following:
   :type 'boolean
   :group 'json+)
 
+(defcustom json+-mode-manage-hideshow t
+  "Whether json+ should configure and auto-enable hideshow.
+
+When set, it does the following during `json+-mode' activation:
+
+- Enables hideshow if not already switched on.
+
+- Sets up context-sensitive org-mode style keybindings through
+  `hideshow-org'.
+"
+  )
+
 (defun json+-create-newline-and-enter-sexp (&rest _ignored)
-  "Open a new brace or bracket expression, with relevant newline
-and indentation instead of the default '{}'."
+  "Tweak the post-closing-brace insertion behaviour.
+
+Open a new brace or bracket expression, with relevant newline and
+indentation instead of the default '{}'."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
