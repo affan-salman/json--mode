@@ -114,15 +114,13 @@ positive, off otherwise."
          (sp-local-pair 'json-mode "{" nil :post-handlers
                         '((json+-create-newline-and-enter-sexp "RET"))))
         (when (and json+-mode-manage-hideshow
-                   (featurep 'hideshow)
-                   (featurep 'hideshow-org))
+                   (require 'hideshow "hideshow" t)
+                   (require 'hideshow-org "hideshow-org" t))
           ;; Be careful not to override existing hideshow configuration.
           (when (not hs-minor-mode)
-            (require 'hideshow)
             (hs-minor-mode 1)
             (setq-local json+-enabled-hideshow t))
           (when (not hs-org/minor-mode)
-            (require 'hideshow-org)
             (hs-org/minor-mode 1)
             (setq-local json+-enabled-hideshow-org t))))
     (progn
