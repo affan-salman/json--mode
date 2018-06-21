@@ -104,13 +104,12 @@ positive, off otherwise."
   :group 'json+
   (if json+-mode
       (progn
-        (when (and json+-mode-manage-smartparens (featurep 'smartparens))
+        (when (and json+-mode-manage-smartparens
+                   (require 'smartparens "smartparens" t))
          ;; Be careful not to override existing smartparens configuration.
-         (if (not smartparens-mode)
-             (progn
-               (require 'smartparens)
-               (smartparens-mode 1)
-               (setq-local json+-enabled-smartparens t)))
+         (when (not smartparens-mode)
+           (smartparens-mode 1)
+           (setq-local json+-enabled-smartparens t))
          (sp-local-pair 'json-mode "{" nil :post-handlers
                         '((json+-create-newline-and-enter-sexp "RET"))))
         (when (and json+-mode-manage-hideshow
