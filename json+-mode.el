@@ -81,6 +81,12 @@ indentation instead of the default pair on the same line."
   (forward-line -1)
   (indent-according-to-mode))
 
+(defun json+-configure-hideshow (orig-fn &rest args)
+  (save-excursion
+    (end-of-line)
+    (let ((res (apply orig-fn args)))
+      res)))
+
 ;;
 ;; Track the state of auto-activated modes to respect the user's previous
 ;; settings when json+ mode is toggled off.
@@ -123,7 +129,8 @@ positive, off otherwise."
             (setq-local json+-enabled-hideshow t))
           (when (not hs-org/minor-mode)
             (hs-org/minor-mode 1)
-            (setq-local json+-enabled-hideshow-org t))))
+            (setq-local json+-enabled-hideshow-org t))
+          (advice-add 'hs-org/hideshow :around #'json+-configure-hideshow)))
     (progn
       (when json+-enabled-smartparens
         (smartparens-mode -1)
