@@ -38,6 +38,7 @@
 ;;; Code:
 
 (require 'json-mode)
+(require 'dash)
 
 (defgroup json+-mode nil
   "json+ minor mode."
@@ -74,7 +75,7 @@ When set, it does the following during `json+-mode' activation:
   "Tweak the post-closing-brace insertion behaviour.
 
 Open a new brace or bracket expression, with relevant newline and
-indentation instead of the default '{}'."
+indentation instead of the default pair on the same line."
   (newline)
   (indent-according-to-mode)
   (forward-line -1)
@@ -110,8 +111,9 @@ positive, off otherwise."
          (when (not smartparens-mode)
            (smartparens-mode 1)
            (setq-local json+-enabled-smartparens t))
-         (sp-local-pair 'json-mode "{" nil :post-handlers
-                        '((json+-create-newline-and-enter-sexp "RET"))))
+         (-each '("{" "[" "(")
+           (lambda (op-char) (sp-local-pair 'json-mode op-char nil :post-handlers
+                           '((json+-create-newline-and-enter-sexp "RET"))))))
         (when (and json+-mode-manage-hideshow
                    (require 'hideshow "hideshow" t)
                    (require 'hideshow-org "hideshow-org" t))
